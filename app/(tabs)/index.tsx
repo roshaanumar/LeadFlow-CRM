@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { router, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
   Pressable,
@@ -153,7 +154,11 @@ export default function DashboardScreen() {
         <Text style={styles.sectionTitle}>Quick Actions</Text>
 
         <View style={styles.actionRow}>
-          <Pressable style={styles.primaryButton}>
+          <Pressable
+  style={styles.primaryButton}
+  onPress={() => router.push('/add-lead' as Href)}
+>
+
             <Ionicons name="add" size={22} color="#FFFFFF" />
             <Text style={styles.primaryButtonText}>Add New Lead</Text>
           </Pressable>

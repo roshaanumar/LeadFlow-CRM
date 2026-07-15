@@ -30,6 +30,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+  name="add-lead"
+  options={{
+    title: 'Add Lead',
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="person-add-outline" color={color} size={size} />
+    ),
+  }}
+/>
 
       <Tabs.Screen
         name="explore"
