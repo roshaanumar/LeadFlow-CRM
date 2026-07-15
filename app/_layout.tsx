@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
+import { LeadProvider } from '../context/LeadContext';
 export const unstable_settings = {
   anchor: '(tabs)',
 };
@@ -12,13 +12,18 @@ export const unstable_settings = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  return (
+return (
+  <LeadProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: 'modal', title: 'Modal' }}
+        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
-  );
+  </LeadProvider>
+);
 }
