@@ -1,98 +1,530 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+type IconName = keyof typeof Ionicons.glyphMap;
 
-export default function HomeScreen() {
+type StatisticCardProps = {
+  title: string;
+  value: string;
+  icon: IconName;
+  accent: string;
+};
+
+const recentLeads = [
+  {
+    id: 1,
+    name: 'Alex Morgan',
+    company: 'Vintage Hub',
+    status: 'Interested',
+    followUp: '18 July',
+  },
+  {
+    id: 2,
+    name: 'Emma Wilson',
+    company: 'Urban Archive',
+    status: 'Meeting Booked',
+    followUp: '20 July',
+  },
+  {
+    id: 3,
+    name: 'Daniel Smith',
+    company: 'Retro Supply Co.',
+    status: 'Contacted',
+    followUp: '22 July',
+  },
+];
+
+function StatisticCard({
+  title,
+  value,
+  icon,
+  accent,
+}: StatisticCardProps) {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.statCard}>
+      <View style={[styles.iconContainer, { backgroundColor: `${accent}20` }]}>
+        <Ionicons name={icon} size={22} color={accent} />
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statTitle}>{title}</Text>
+    </View>
+  );
+}
+
+function getStatusStyle(status: string) {
+  if (status === 'Interested') {
+    return {
+      backgroundColor: '#F59E0B20',
+      color: '#FBBF24',
+    };
+  }
+
+  if (status === 'Meeting Booked') {
+    return {
+      backgroundColor: '#8B5CF620',
+      color: '#A78BFA',
+    };
+  }
+
+  return {
+    backgroundColor: '#3B82F620',
+    color: '#60A5FA',
+  };
+}
+
+export default function DashboardScreen() {
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="light" />
+
+      <ScrollView
+        style={styles.screen}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>Good evening, Roshaan</Text>
+            <Text style={styles.headerTitle}>LeadFlow Dashboard</Text>
+          </View>
+
+          <View style={styles.profile}>
+            <Text style={styles.profileText}>R</Text>
+          </View>
+        </View>
+
+        <View style={styles.heroCard}>
+          <View style={styles.heroGlow} />
+
+          <Text style={styles.heroLabel}>SALES PIPELINE</Text>
+          <Text style={styles.heroValue}>24 Active Leads</Text>
+
+          <View style={styles.progressRow}>
+            <Text style={styles.progressText}>Monthly progress</Text>
+            <Text style={styles.progressPercentage}>68%</Text>
+          </View>
+
+          <View style={styles.progressTrack}>
+            <View style={styles.progressFill} />
+          </View>
+        </View>
+
+        <Text style={styles.sectionTitle}>Overview</Text>
+
+        <View style={styles.statsGrid}>
+          <StatisticCard
+            title="Total Leads"
+            value="36"
+            icon="people-outline"
+            accent="#4F7CFF"
+          />
+
+          <StatisticCard
+            title="Interested"
+            value="12"
+            icon="flame-outline"
+            accent="#F59E0B"
+          />
+
+          <StatisticCard
+            title="Meetings"
+            value="7"
+            icon="calendar-outline"
+            accent="#8B5CF6"
+          />
+
+          <StatisticCard
+            title="Closed Deals"
+            value="5"
+            icon="trophy-outline"
+            accent="#22C55E"
+          />
+        </View>
+
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
+
+        <View style={styles.actionRow}>
+          <Pressable style={styles.primaryButton}>
+            <Ionicons name="add" size={22} color="#FFFFFF" />
+            <Text style={styles.primaryButtonText}>Add New Lead</Text>
+          </Pressable>
+
+          <Pressable style={styles.secondaryButton}>
+            <Ionicons name="funnel-outline" size={20} color="#AFC2FF" />
+            <Text style={styles.secondaryButtonText}>View Pipeline</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Recent Leads</Text>
+
+          <Pressable>
+            <Text style={styles.viewAllText}>View all</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.leadsContainer}>
+          {recentLeads.map((lead) => {
+            const statusStyle = getStatusStyle(lead.status);
+
+            return (
+              <Pressable key={lead.id} style={styles.leadCard}>
+                <View style={styles.leadAvatar}>
+                  <Text style={styles.leadAvatarText}>
+                    {lead.name.charAt(0)}
+                  </Text>
+                </View>
+
+                <View style={styles.leadInformation}>
+                  <Text style={styles.leadName}>{lead.name}</Text>
+                  <Text style={styles.companyName}>{lead.company}</Text>
+
+                  <View style={styles.followUpRow}>
+                    <Ionicons
+                      name="time-outline"
+                      size={14}
+                      color="#71809B"
+                    />
+                    <Text style={styles.followUpText}>
+                      Follow-up: {lead.followUp}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.leadRight}>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: statusStyle.backgroundColor },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.statusText,
+                        { color: statusStyle.color },
+                      ]}
+                    >
+                      {lead.status}
+                    </Text>
+                  </View>
+
+                  <Ionicons
+                    name="chevron-forward"
+                    size={18}
+                    color="#52617A"
+                  />
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#081120',
+  },
+
+  screen: {
+    flex: 1,
+    backgroundColor: '#081120',
+  },
+
+  content: {
+    width: '100%',
+    maxWidth: 1100,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+
+  greeting: {
+    color: '#8290A8',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+
+  headerTitle: {
+    color: '#F8FAFC',
+    fontSize: 26,
+    fontWeight: '800',
+  },
+
+  profile: {
+    width: 46,
+    height: 46,
+    borderRadius: 16,
+    backgroundColor: '#4F7CFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  profileText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '800',
+  },
+
+  heroCard: {
+    overflow: 'hidden',
+    backgroundColor: '#14213B',
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 28,
+    borderWidth: 1,
+    borderColor: '#243657',
+  },
+
+  heroGlow: {
+    position: 'absolute',
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    backgroundColor: '#4F7CFF35',
+    right: -55,
+    top: -80,
+  },
+
+  heroLabel: {
+    color: '#8FA8FF',
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 1.4,
+  },
+
+  heroValue: {
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontWeight: '800',
+    marginTop: 8,
+    marginBottom: 26,
+  },
+
+  progressRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 9,
+  },
+
+  progressText: {
+    color: '#A6B2C7',
+    fontSize: 13,
+  },
+
+  progressPercentage: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+
+  progressTrack: {
+    height: 8,
+    borderRadius: 20,
+    backgroundColor: '#263653',
+    overflow: 'hidden',
+  },
+
+  progressFill: {
+    width: '68%',
+    height: '100%',
+    borderRadius: 20,
+    backgroundColor: '#4F7CFF',
+  },
+
+  sectionTitle: {
+    color: '#F8FAFC',
+    fontSize: 18,
+    fontWeight: '800',
+    marginBottom: 14,
+  },
+
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+
+  statCard: {
+    width: '48.5%',
+    backgroundColor: '#111D32',
+    borderRadius: 20,
+    padding: 18,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: '#1D2B43',
+  },
+
+  iconContainer: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+
+  statValue: {
+    color: '#FFFFFF',
+    fontSize: 27,
+    fontWeight: '800',
+  },
+
+  statTitle: {
+    color: '#8290A8',
+    fontSize: 13,
+    marginTop: 5,
+  },
+
+  actionRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 30,
+  },
+
+  primaryButton: {
+    flex: 1,
+    height: 55,
+    borderRadius: 17,
+    backgroundColor: '#4F7CFF',
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '800',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+
+  secondaryButton: {
+    flex: 1,
+    height: 55,
+    borderRadius: 17,
+    backgroundColor: '#15233B',
+    borderWidth: 1,
+    borderColor: '#2A3D60',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  secondaryButtonText: {
+    color: '#AFC2FF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  viewAllText: {
+    color: '#6F91FF',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 14,
+  },
+
+  leadsContainer: {
+    gap: 12,
+  },
+
+  leadCard: {
+    backgroundColor: '#111D32',
+    borderRadius: 19,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#1D2B43',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  leadAvatar: {
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    backgroundColor: '#24385F',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 13,
+  },
+
+  leadAvatarText: {
+    color: '#9EB4FF',
+    fontSize: 17,
+    fontWeight: '800',
+  },
+
+  leadInformation: {
+    flex: 1,
+  },
+
+  leadName: {
+    color: '#F8FAFC',
+    fontSize: 15,
+    fontWeight: '800',
+  },
+
+  companyName: {
+    color: '#8795AB',
+    fontSize: 13,
+    marginTop: 3,
+  },
+
+  followUpRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 8,
+  },
+
+  followUpText: {
+    color: '#71809B',
+    fontSize: 11,
+  },
+
+  leadRight: {
+    alignItems: 'flex-end',
+    gap: 12,
+  },
+
+  statusBadge: {
+    maxWidth: 110,
+    borderRadius: 20,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+  },
+
+  statusText: {
+    fontSize: 10,
+    fontWeight: '800',
+    textAlign: 'center',
   },
 });
