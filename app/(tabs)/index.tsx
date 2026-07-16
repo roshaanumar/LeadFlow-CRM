@@ -9,6 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useLeads } from '../../context/LeadContext';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -83,6 +84,24 @@ function getStatusStyle(status: string) {
 }
 
 export default function DashboardScreen() {
+  const { leads } = useLeads();
+  const totalLeads = leads.length;
+
+const activeLeads = leads.filter(
+  (lead) => lead.status !== 'Closed' && lead.status !== 'Lost',
+).length;
+
+const interestedLeads = leads.filter(
+  (lead) => lead.status === 'Interested',
+).length;
+
+const meetingLeads = leads.filter(
+  (lead) => lead.status === 'Meeting Booked',
+).length;
+
+const closedLeads = leads.filter(
+  (lead) => lead.status === 'Closed',
+).length;
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="light" />
@@ -107,7 +126,7 @@ export default function DashboardScreen() {
           <View style={styles.heroGlow} />
 
           <Text style={styles.heroLabel}>SALES PIPELINE</Text>
-          <Text style={styles.heroValue}>24 Active Leads</Text>
+          <Text style={styles.heroValue}>{activeLeads} Active Leads</Text>
 
           <View style={styles.progressRow}>
             <Text style={styles.progressText}>Monthly progress</Text>
@@ -124,28 +143,28 @@ export default function DashboardScreen() {
         <View style={styles.statsGrid}>
           <StatisticCard
             title="Total Leads"
-            value="36"
+            value={String(totalLeads)}
             icon="people-outline"
             accent="#4F7CFF"
           />
 
           <StatisticCard
             title="Interested"
-            value="12"
+            value={String(interestedLeads)}
             icon="flame-outline"
             accent="#F59E0B"
           />
 
           <StatisticCard
             title="Meetings"
-            value="7"
+            value={String(meetingLeads)}
             icon="calendar-outline"
             accent="#8B5CF6"
           />
 
           <StatisticCard
             title="Closed Deals"
-            value="5"
+            value={String(closedLeads)}
             icon="trophy-outline"
             accent="#22C55E"
           />

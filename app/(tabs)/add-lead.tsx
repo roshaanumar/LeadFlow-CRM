@@ -105,15 +105,16 @@ function FormField({
 }
 
 export default function AddLeadScreen() {
-  const parameters = useLocalSearchParams();
   const { addLead, updateLead } = useLeads();
+  const parameters = useLocalSearchParams();
 
   const parameterStatus = readParameter(parameters.status);
   const initialStatus: LeadStatus = isLeadStatus(parameterStatus)
     ? parameterStatus
     : 'New';
 
-  const isEditing = Boolean(readParameter(parameters.id));
+  const leadId = readParameter(parameters.id);
+  const isEditing = Boolean(leadId);
 
   const emptyForm: FormData = {
     name: '',
@@ -187,34 +188,32 @@ export default function AddLeadScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
- function handleSubmit() {
+function handleSubmit() {
   if (!validateForm()) {
     return;
   }
 
-  if (isEditing) {
-  updateLead(readParameter(parameters.id), {
-    contactName: form.name,
-    company: form.company,
-    email: form.email,
-    phone: form.phone,
-    status: form.status,
-    followUpDate: form.followUpDate,
-    notes: form.notes,
-  });
+const leadData = {
+  contactName: form.name.trim(),
+  company: form.company.trim(),
+  email: form.email.trim(),
+  phone: form.phone.trim(),
+  status: form.status,
+  followUpDate: form.followUpDate,
+  notes: form.notes.trim(),
+};
+
+if (isEditing && leadId) {
+  updateLead(leadId, leadData);
 } else {
-  addLead({
-    contactName: form.name,
-    company: form.company,
-    email: form.email,
-    phone: form.phone,
-    status: form.status,
-    followUpDate: form.followUpDate,
-    notes: form.notes,
-  });
+  addLead(leadData);
 }
-  setSuccessMessage('Lead added successfully.');
-  handleClear();
+
+  setSuccessMessage(
+    isEditing
+      ? 'Lead updated successfully.'
+      : 'Lead added successfully.',
+  );
 }
 
   function handleClear() {
