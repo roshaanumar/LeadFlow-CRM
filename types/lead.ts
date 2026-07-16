@@ -2,7 +2,7 @@ export type LeadStatus =
   | 'New'
   | 'Contacted'
   | 'Interested'
-  | 'Meeting'
+  | 'Meeting Booked'
   | 'Closed'
   | 'Lost';
 

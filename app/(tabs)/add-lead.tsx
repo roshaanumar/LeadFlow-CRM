@@ -1,17 +1,18 @@
+import { useLeads } from '@/context/LeadContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    type TextInputProps,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  type TextInputProps,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -105,6 +106,7 @@ function FormField({
 
 export default function AddLeadScreen() {
   const parameters = useLocalSearchParams();
+  const { addLead, updateLead } = useLeads();
 
   const parameterStatus = readParameter(parameters.status);
   const initialStatus: LeadStatus = isLeadStatus(parameterStatus)
@@ -185,17 +187,35 @@ export default function AddLeadScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit() {
-    if (!validateForm()) {
-      return;
-    }
-
-    setSuccessMessage(
-      isEditing
-        ? 'Lead updated successfully.'
-        : 'Lead added successfully.',
-    );
+ function handleSubmit() {
+  if (!validateForm()) {
+    return;
   }
+
+  if (isEditing) {
+  updateLead(readParameter(parameters.id), {
+    contactName: form.name,
+    company: form.company,
+    email: form.email,
+    phone: form.phone,
+    status: form.status,
+    followUpDate: form.followUpDate,
+    notes: form.notes,
+  });
+} else {
+  addLead({
+    contactName: form.name,
+    company: form.company,
+    email: form.email,
+    phone: form.phone,
+    status: form.status,
+    followUpDate: form.followUpDate,
+    notes: form.notes,
+  });
+}
+  setSuccessMessage('Lead added successfully.');
+  handleClear();
+}
 
   function handleClear() {
     setForm(emptyForm);
