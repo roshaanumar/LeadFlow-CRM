@@ -1,17 +1,18 @@
+import { useLeads } from '@/context/LeadContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    type TextInputProps,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  type TextInputProps,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -104,6 +105,7 @@ function FormField({
 }
 
 export default function AddLeadScreen() {
+  const { addLead, updateLead } = useLeads();
   const parameters = useLocalSearchParams();
 
   const parameterStatus = readParameter(parameters.status);
@@ -111,7 +113,8 @@ export default function AddLeadScreen() {
     ? parameterStatus
     : 'New';
 
-  const isEditing = Boolean(readParameter(parameters.id));
+  const leadId = readParameter(parameters.id);
+  const isEditing = Boolean(leadId);
 
   const emptyForm: FormData = {
     name: '',
@@ -185,17 +188,33 @@ export default function AddLeadScreen() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit() {
-    if (!validateForm()) {
-      return;
-    }
-
-    setSuccessMessage(
-      isEditing
-        ? 'Lead updated successfully.'
-        : 'Lead added successfully.',
-    );
+function handleSubmit() {
+  if (!validateForm()) {
+    return;
   }
+
+const leadData = {
+  contactName: form.name.trim(),
+  company: form.company.trim(),
+  email: form.email.trim(),
+  phone: form.phone.trim(),
+  status: form.status,
+  followUpDate: form.followUpDate,
+  notes: form.notes.trim(),
+};
+
+if (isEditing && leadId) {
+  updateLead(leadId, leadData);
+} else {
+  addLead(leadData);
+}
+
+  setSuccessMessage(
+    isEditing
+      ? 'Lead updated successfully.'
+      : 'Lead added successfully.',
+  );
+}
 
   function handleClear() {
     setForm(emptyForm);
