@@ -39,7 +39,15 @@ export default function TabLayout() {
     ),
   }}
 />
-
+<Tabs.Screen
+  name="lead-management"
+  options={{
+    title: 'Leads',
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="people-outline" color={color} size={size} />
+    ),
+  }}
+/>
       <Tabs.Screen
         name="explore"
         options={{
